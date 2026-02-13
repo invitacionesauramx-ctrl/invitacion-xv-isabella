@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis XV - Isabella Montiel</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+  font-family:'Playfair Display', serif;
+  background:linear-gradient(135deg,#1a0f1f,#2b1534,#120814);
+  color:#fff;
+  text-align:center;
+  overflow-x:hidden;
+  scroll-behavior:smooth;
+}
+
+/* PARTICULAS */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:-1;
+}
+
+/* BOTÓN MÚSICA */
+.music-btn{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  background:#d4af37;
+  color:#000;
+  border:none;
+  cursor:pointer;
+  font-size:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 25px rgba(212,175,55,.6);
+  z-index:999;
+  transition:.3s;
+}
+.music-btn:hover{
+  transform:scale(1.1);
+  background:#fff;
+}
+
+/* SECCIONES */
+section{
+  padding:100px 20px;
+}
+
+h2{
+  color:#d4af37;
+  margin-bottom:35px;
+  font-size:36px;
+  letter-spacing:2px;
+}
+
+/* HERO PREMIUM */
+.hero{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),
+    url('https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+}
+
+.hero-content{
+  padding:60px;
+  backdrop-filter:blur(10px);
+  background:rgba(0,0,0,.35);
+  border-radius:30px;
+  box-shadow:0 0 80px rgba(212,175,55,.25);
+}
+
+.hero h1{
+  font-family:'Great Vibes', cursive;
+  font-size:75px;
+  background:linear-gradient(90deg,#f4d03f,#fff3b0,#f4d03f);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+  letter-spacing:4px;
+  margin-top:15px;
+  font-size:18px;
+}
+
+.divider{
+  width:150px;
+  height:2px;
+  background:#d4af37;
+  margin:25px auto;
+  box-shadow:0 0 25px rgba(212,175,55,.9);
+}
+
+.btn{
+  display:inline-block;
+  margin-top:30px;
+  padding:14px 35px;
+  background:#d4af37;
+  color:#000;
+  text-decoration:none;
+  border-radius:40px;
+  font-weight:bold;
+  transition:.3s;
+}
+
+.btn:hover{
+  background:#fff;
+  transform:scale(1.05);
+}
+
+/* BLOQUES GLASS */
+.glass-box{
+  max-width:650px;
+  margin:0 auto;
+  background:rgba(255,255,255,0.05);
+  padding:45px;
+  border-radius:30px;
+  border:1px solid rgba(212,175,55,.4);
+  box-shadow:0 0 40px rgba(212,175,55,.15);
+  backdrop-filter:blur(8px);
+}
+
+/* GALERIA */
+.gallery-wrapper{
+  max-width:520px;
+  margin:0 auto;
+  position:relative;
+  overflow:hidden;
+  border-radius:30px;
+  box-shadow:0 25px 60px rgba(0,0,0,.7);
+}
+
+.gallery-track{
+  display:flex;
+  transition:transform .6s ease;
+}
+
+.slide{min-width:100%;}
+
+.slide img{
+  width:100%;
+  height:540px;
+  object-fit:cover;
+  display:block;
+}
+
+.arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:55px;
+  height:55px;
+  background:rgba(0,0,0,0.7);
+  border-radius:50%;
+  color:#d4af37;
+  font-size:26px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(212,175,55,.5);
+  z-index:10;
+}
+
+.prev{left:15px;}
+.next{right:15px;}
+
+/* ITINERARIO */
+.timeline-item{
+  margin:25px 0;
+  opacity:0;
+  transform:translateY(40px);
+  transition:.8s ease;
+}
+
+.timeline-item.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.timeline-item span{
+  display:block;
+  font-size:22px;
+  font-weight:bold;
+  color:#d4af37;
+  margin-bottom:8px;
+}
+
+/* COUNTDOWN */
+.countdown-box{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:20px;
+}
+
+.time-box{
+  width:95px;
+  padding:20px 10px;
+  border:2px solid #d4af37;
+  border-radius:20px;
+  background:rgba(255,255,255,0.05);
+}
+
+.time-box span{
+  font-size:26px;
+  color:#d4af37;
+  font-weight:bold;
+  display:block;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.hero h1{font-size:50px;}
+.slide img{height:380px;}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- AUDIO -->
+<audio id="bg-music" loop>
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+<button class="music-btn" id="music-toggle">🔊</button>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Isabella Montiel</h1>
+    <div class="divider"></div>
+    <p>MIS XV AÑOS</p>
+    <p>14 DE MARZO 2026</p>
+    <a href="#detalle" class="btn">Ver Invitación</a>
+  </div>
+</section>
+
+<!-- PADRES -->
+<section id="detalle">
+  <div class="glass-box">
+    <h2>Con la bendición de Dios y el amor de mis padres</h2>
+    <p>Sr. Alejandro Montiel</p>
+    <p>Sra. Gabriela Torres</p>
+  </div>
+</section>
+
+<!-- MISA -->
+<section>
+  <div class="glass-box">
+    <h2>Misa</h2>
+    <p><strong>Parroquia Santa María Reina</strong></p>
+    <p>Av. Reforma 245, Puebla, Puebla</p>
+    <p>⛪ 4:30 PM</p>
+  </div>
+</section>
+
+<!-- RECEPCION -->
+<section>
+  <div class="glass-box">
+    <h2>Recepción</h2>
+    <p><strong>Salón Jardín Esmeralda</strong></p>
+    <p>Blvd. Atlixco 3201, Puebla, Puebla</p>
+    <p>🎉 8:00 PM</p>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<section>
+  <h2>Cuenta Regresiva</h2>
+  <div class="countdown-box">
+    <div class="time-box"><span id="days"></span>Días</div>
+    <div class="time-box"><span id="hours"></span>Horas</div>
+    <div class="time-box"><span id="minutes"></span>Min</div>
+    <div class="time-box"><span id="seconds"></span>Seg</div>
+  </div>
+</section>
+
+<!-- ITINERARIO -->
+<section>
+  <div class="glass-box">
+    <h2>Itinerario</h2>
+    <div class="timeline-item"><span>4:30 PM</span>Ceremonia Religiosa</div>
+    <div class="timeline-item"><span>8:00 PM</span>Recepción y Cena</div>
+    <div class="timeline-item"><span>9:30 PM</span>Vals</div>
+    <div class="timeline-item"><span>10:00 PM</span>Apertura de Pista</div>
+  </div>
+</section>
+
+<!-- GALERIA -->
+<section>
+<h2>Galería</h2>
+<div class="gallery-wrapper">
+<button class="arrow prev">❮</button>
+<button class="arrow next">❯</button>
+<div class="gallery-track">
+<div class="slide"><img src="https://i.postimg.cc/fRVRFJ1w/cloned-image-(65).png"></div>
+<div class="slide"><img src="https://i.postimg.cc/7hBqtkVC/cloned-image-(66).png"></div>
+<div class="slide"><img src="https://i.postimg.cc/15j9py41/cloned-image-(67).png"></div>
+</div>
+</div>
+</section>
+
+<!-- VESTIMENTA -->
+<section>
+  <div class="glass-box">
+    <h2>Código de Vestimenta</h2>
+    <p>Formal elegante</p>
+    <p>Damas: Vestido largo</p>
+    <p>Caballeros: Traje oscuro</p>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section>
+  <div class="glass-box">
+    <h2>Confirmación</h2>
+    <p>Confirma antes del 5 de Marzo 2026</p>
+    <a href="https://wa.me/522221234567" class="btn">Confirmar por WhatsApp</a>
+  </div>
+</section>
+
+<!-- MENSAJE -->
+<section>
+  <div class="glass-box">
+    <h2>Un Mensaje Para Ti</h2>
+    <p>
+      Hoy comienzo una nueva etapa llena de sueños e ilusiones.  
+      Gracias por acompañarme en este día tan especial.  
+      Tu presencia hará este momento inolvidable.
+      <br><br>
+      Con cariño,<br>
+      Isabella 💛
+    </p>
+  </div>
+</section>
+
+<script>
+/* GALERIA */
+const track=document.querySelector(".gallery-track");
+const slides=document.querySelectorAll(".slide");
+let index=0;
+document.querySelector(".next").onclick=()=>{index=(index+1)%slides.length;track.style.transform="translateX(-"+index*100+"%)";};
+document.querySelector(".prev").onclick=()=>{index=(index-1+slides.length)%slides.length;track.style.transform="translateX(-"+index*100+"%)";};
+
+/* COUNTDOWN */
+const eventDate=new Date("March 14, 2026 16:30:00").getTime();
+setInterval(()=>{
+const now=new Date().getTime();
+let diff=eventDate-now;
+if(diff<0) diff=0;
+document.getElementById("days").innerHTML=Math.floor(diff/(1000*60*60*24));
+document.getElementById("hours").innerHTML=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+document.getElementById("minutes").innerHTML=Math.floor((diff%(1000*60*60))/(1000*60));
+document.getElementById("seconds").innerHTML=Math.floor((diff%(1000*60))/1000);
+},1000);
+
+/* MUSICA */
+const music=document.getElementById("bg-music");
+const btn=document.getElementById("music-toggle");
+
+window.addEventListener("load",()=>{
+  music.play().catch(()=>{});
+});
+
+btn.addEventListener("click",()=>{
+  if(music.paused){
+    music.play();
+    btn.innerHTML="🔊";
+  }else{
+    music.pause();
+    btn.innerHTML="🔇";
+  }
+});
+
+/* ANIMACION ITINERARIO */
+const items=document.querySelectorAll(".timeline-item");
+function activar(){
+const trigger=window.innerHeight*0.85;
+items.forEach(item=>{
+if(item.getBoundingClientRect().top<trigger){
+item.classList.add("show");
+}
+});
+}
+window.addEventListener("scroll",activar);
+window.addEventListener("load",activar);
+
+/* PARTICULAS */
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+function resize(){
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+let particles=[];
+for(let i=0;i<120;i++){
+particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,d:Math.random()*0.6+0.2});
+}
+
+function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="rgba(212,175,55,0.8)";
+particles.forEach(p=>{
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fill();
+p.y+=p.d;
+if(p.y>canvas.height){p.y=0;p.x=Math.random()*canvas.width;}
+});
+requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+</body>
+</html>
